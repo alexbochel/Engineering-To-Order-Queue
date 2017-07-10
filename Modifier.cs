@@ -13,18 +13,23 @@ namespace ConsoleApplication1
     /// This class modifies an array of all of the sales in order to manipulate the order and contents
     /// which will then print out onto the excel document. 
     /// 
-    /// Author: Alexander James Bochel
-    /// Date Updated: 6/16/2017
+    /// TODO: Make more efficient, get rid of all the seperate for loops. 
+    /// 
+    /// @author: Alexander James Bochel
+    /// @version: 6/23/2017
     /// 
     /// </summary>
     public class Modifier
     {
+        /// <summary>
+        /// List of sales read from excel sheet. 
+        /// </summary>
         public List<Sales> salesList;
 
         /// <summary>
         /// This is the constructor for the Modifier object. 
         /// </summary>
-        /// <param name="sales"> Takes the list of all of the sales objects created. </param>
+        /// <param name="list"> Takes the list of all of the sales objects created. </param>
         public Modifier(List<Sales> list)
         {
             salesList = list;
@@ -38,9 +43,15 @@ namespace ConsoleApplication1
         {
             deleteTJ();
             deleteFifteens();
+            deleteKVTens();
+            
             sortMaterial();
-            convertDate();
-            findQueueDuration();
+
+            for (int i = 0; i < salesList.Count; i++)
+            {
+                convertDate(i);
+                findQueueDuration(i);
+            }
         }
 
         /// <summary>
@@ -51,15 +62,30 @@ namespace ConsoleApplication1
         {
             salesList = salesList.OrderBy(o => o.material).ToList();
         }
-
+        
         /// <summary>
-        /// This method deletes all MSPS's with value of 15. 
+        /// This method deletes all MSPS's with value of 15 except for Kurt Versen brand. 
         /// </summary>
         public void deleteFifteens()
         {
             for (int i = 0; i < salesList.Count; i++ )
             {
-                if (salesList[i].MSPS == "15")
+                if (salesList[i].MSPS == "15" && !salesList[i].material.Contains("KV"))
+                {
+                    salesList.Remove(salesList[i]);
+                    i--;
+                }
+            }
+        }
+
+        /// <summary>
+        /// This method deletes all KV products with values of 10. 
+        /// </summary>
+        public void deleteKVTens()
+        {
+            for (int i = 0; i < salesList.Count; i++)
+            {
+                if (salesList[i].MSPS == "10" && salesList[i].material.Contains("KV"))
                 {
                     salesList.Remove(salesList[i]);
                     i--;
@@ -85,12 +111,17 @@ namespace ConsoleApplication1
         /// <summary>
         /// This method iterates through every Sales object and retrieves a correctly formatted date. 
         /// </summary>
-        public void convertDate()
+        /// <param name="i"> Count for the salesList. </param>
+        public void convertDate(int i)
         {
-            for (int i = 0; i < salesList.Count; i++)
+            try
             {
                 salesList[i].doubleDate = double.Parse(salesList[i].date);
                 salesList[i].formatDate = DateTime.FromOADate(salesList[i].doubleDate);
+            }
+            catch
+            {
+                Console.WriteLine("You Messed Up! Don't forget to have SAP data copied to your clipboard. GO BLUE!");
             }
         }
 
@@ -98,12 +129,10 @@ namespace ConsoleApplication1
         /// This method iterates through every Sales object and finds the number of days an ETO is 
         /// in the queue for. 
         /// </summary>
-        public void findQueueDuration()
+        /// <param name="i"> Count for the salesList. </param>
+        public void findQueueDuration(int i)
         {
-            for (int i = 0; i < salesList.Count; i++)
-            {
                 salesList[i].findQueueDuration();
-            }
         }
     }
 }

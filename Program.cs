@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using _Excel = Microsoft.Office.Interop.Excel;
+using System.Reflection;
+using System.IO;
 
 namespace ConsoleApplication1
 {
     /// <summary>
-    /// Author: Alexander James Bochel
-    /// Date Updated: 6/16/2017
+    /// Project entry point. 
+    /// 
+    /// @author: Alexander James Bochel
+    /// @version: 7/5/2017
     /// </summary>
     class Program
     {
@@ -22,6 +27,7 @@ namespace ConsoleApplication1
         /// <param name="args"> Command line arguments. </param>
         static void Main(string[] args)
         {
+            runSAP();
             openAndExecute();
             print();
         }
@@ -30,7 +36,7 @@ namespace ConsoleApplication1
         /// This method creates a reader that automatically reads in data upon creation and also
         /// has a function call to the modifier to begin modifying the list of Sales. 
         /// </summary>
-        public static void openAndExecute()
+        private static void openAndExecute()
         {
             reader = new Reader();
             reader.modifier.execute();
@@ -39,11 +45,38 @@ namespace ConsoleApplication1
         /// <summary>
         /// This method creates the printer object that automatically starts printing upon creation. 
         /// </summary>
-        public static void print()
+        private static void print()
         {
-            Printer printer = new Printer(reader.modifier.salesList, 
+            Printer printer = new Printer(reader.modifier.salesList,
                 reader.excel, reader.wbs, reader.wb, reader.ws);
+        }
 
-        }         
+        /// <summary>
+        /// This method calls the embedded VBScript file and runs it before executing the 
+        /// rest of the program. 
+        /// </summary>
+        private static void runSAP()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            //Getting names of all embedded resources
+            var allResourceNames = assembly.GetManifestResourceNames();
+            //Selecting first one. 
+            var resourceName = allResourceNames[0];
+            var pathToFile = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory) +
+                              resourceName;
+
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            using (var fileStream = File.Create(pathToFile))
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                stream.CopyTo(fileStream);
+            }
+
+            Process process = new Process();
+            process.StartInfo.FileName = pathToFile;
+            process.Start();
+            process.WaitForExit();
+            process.Close();
+        }
     }
 }

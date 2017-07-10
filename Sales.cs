@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 namespace ConsoleApplication1 
 {
     /// <summary>
+    /// 
     /// This class contains information about each individual row on the excel sheet. 
     /// 
-    /// Author: Alexander James Bochel
-    /// Date Updated: 6/16/2017
+    /// @author: Alexander James Bochel
+    /// @version: 7/1/2017
     /// 
     /// </summary>
     public class Sales

@@ -9,15 +9,16 @@ using _Excel = Microsoft.Office.Interop.Excel;
 namespace ConsoleApplication1
 {
     /// <summary>
+    /// 
     /// This class reads data from an excel sheet and stores the data in Sales objects
     /// and then places each Sale into a List of Sales. 
     /// 
-    /// Author: Alexander James Bochel
-    /// Date Updated: 6/16/2017
+    /// @author: Alexander James Bochel
+    /// @version: 6/16/2017
     /// 
     /// </summary>
     public class Reader
-    {
+    {   
         private int sheet = 1;
         public _Application excel { get; set; }
         public Workbooks wbs { get; set; }
@@ -36,6 +37,8 @@ namespace ConsoleApplication1
             excel = new _Excel.Application();
             wbs = excel.Workbooks;             // Easier garbage cleanup when split up. 
             wb = excel.Workbooks.Add();
+            wb.Worksheets.Add();
+            wb.Worksheets.Add();
             ws = wb.Worksheets[sheet];
             ws.Paste();
 
