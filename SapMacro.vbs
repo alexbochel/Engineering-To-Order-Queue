@@ -1,5 +1,3 @@
-'* This script is used in order to retrieve data from SAP before manipulating it and placing it in an excel sheet. 
-
 If Not IsObject(application) Then
    Set SapGuiAuto  = GetObject("SAPGUI")
    Set application = SapGuiAuto.GetScriptingEngine
@@ -64,3 +62,7 @@ session.findById("wnd[0]/tbar[1]/btn[18]").press
 session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell").selectAll
 session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell").contextMenu
 session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell").selectContextMenuItemByText "Copy Text"
+
+'* This section resets SAP. 
+session.findById("wnd[0]/tbar[0]/btn[15]").press
+session.findById("wnd[0]/tbar[0]/btn[15]").press

@@ -7,16 +7,14 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 
-namespace ConsoleApplication1 
+namespace ConsoleApplication1
 {
     /// <summary>
     /// This class modifies an array of all of the sales in order to manipulate the order and contents
     /// which will then print out onto the excel document. 
     /// 
-    /// TODO: Make more efficient, get rid of all the seperate for loops. 
-    /// 
     /// @author: Alexander James Bochel
-    /// @version: 6/23/2017
+    /// @version: 7/12/2017
     /// 
     /// </summary>
     public class Modifier
@@ -38,19 +36,30 @@ namespace ConsoleApplication1
         /// <summary>
         /// This method is called by Main to perform all operations within this class. 
         /// </summary>
-        /// <returns> Returns true if exits correctly. </returns>
         public void execute()
         {
-            deleteTJ();
-            deleteFifteens();
-            deleteKVTens();
-            
             sortMaterial();
+            modifyEntries();
+        }
 
-            for (int i = 0; i < salesList.Count; i++)
+        /// <summary>
+        /// This method iterates through the entries and deletes certain items and adds dates to the rest. 
+        /// </summary>
+        public void modifyEntries()
+        {
+            // Loops through all of the entries and deletes unneeded ones and finds dates. 
+            for (int j = 0; j < salesList.Count; j++)
             {
-                convertDate(i);
-                findQueueDuration(i);
+                bool found = false;
+                
+                convertDate(j);
+                findQueueDuration(j);
+
+                deletePres(ref j, ref found);
+                deleteTJ(ref j, ref found);
+                deleteKVTens(ref j, ref found);
+                deleteFifteens(ref j, ref found);
+                tweaks(ref j, ref found);
             }
         }
 
@@ -58,61 +67,59 @@ namespace ConsoleApplication1
         /// This method sorts the material by alphabetical order using a selection sort implementation. 
         /// </summary>
         /// <returns> Whether or not sort correctly finishes. </returns>
-        public void sortMaterial() 
+        public void sortMaterial()
         {
             salesList = salesList.OrderBy(o => o.material).ToList();
         }
+
+        private void tweaks(ref int i, ref bool deleted)
+        {
+            if (!deleted && salesList[i].daysInQueue > 100)
+            {
+                remove(ref i, ref deleted);
+            }
+        }
+
+        private void deletePres(ref int i, ref bool deleted)
+        {
+            if (!deleted && salesList[i].material.Contains("PRES"))
+            {
+                remove(ref i, ref deleted);
+            }
+        }
         
-        /// <summary>
-        /// This method deletes all MSPS's with value of 15 except for Kurt Versen brand. 
-        /// </summary>
-        public void deleteFifteens()
+        private void deleteFifteens(ref int i, ref bool deleted)
         {
-            for (int i = 0; i < salesList.Count; i++ )
+            if (!deleted && salesList[i].MSPS == "15" && !salesList[i].material.Contains("KV"))
             {
-                if (salesList[i].MSPS == "15" && !salesList[i].material.Contains("KV"))
-                {
-                    salesList.Remove(salesList[i]);
-                    i--;
-                }
+                remove(ref i, ref deleted);
             }
         }
 
-        /// <summary>
-        /// This method deletes all KV products with values of 10. 
-        /// </summary>
-        public void deleteKVTens()
+        private void deleteKVTens(ref int i, ref bool deleted)
         {
-            for (int i = 0; i < salesList.Count; i++)
+            if (!deleted && salesList[i].MSPS == "10" && salesList[i].material.Contains("KV"))
             {
-                if (salesList[i].MSPS == "10" && salesList[i].material.Contains("KV"))
-                {
-                    salesList.Remove(salesList[i]);
-                    i--;
-                }
+                remove(ref i, ref deleted);
             }
         }
 
-        /// <summary>
-        /// This method deletes all sales with a 'TJ' (or just J) material. 
-        /// </summary>
-        public void deleteTJ()
+        private void deleteTJ(ref int i, ref bool deleted)
         {
-            for (int i = 0; i < salesList.Count; i++)
+            if (!deleted && salesList[i].material.Contains("J"))
             {
-                if (salesList[i].material.Contains("J"))
-                {
-                    salesList.Remove(salesList[i]);
-                    i--;
-                }
+                remove(ref i, ref deleted);
             }
         }
 
-        /// <summary>
-        /// This method iterates through every Sales object and retrieves a correctly formatted date. 
-        /// </summary>
-        /// <param name="i"> Count for the salesList. </param>
-        public void convertDate(int i)
+        private void remove(ref int k, ref bool delete)
+        {
+            salesList.Remove(salesList[k]);
+            delete = true;
+            k--;
+        }
+
+        private void convertDate(int i)
         {
             try
             {
@@ -125,14 +132,9 @@ namespace ConsoleApplication1
             }
         }
 
-        /// <summary>
-        /// This method iterates through every Sales object and finds the number of days an ETO is 
-        /// in the queue for. 
-        /// </summary>
-        /// <param name="i"> Count for the salesList. </param>
-        public void findQueueDuration(int i)
+        private void findQueueDuration(int i)
         {
-                salesList[i].findQueueDuration();
+            salesList[i].findQueueDuration();
         }
     }
 }

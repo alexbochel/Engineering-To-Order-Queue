@@ -14,7 +14,7 @@ namespace ConsoleApplication1
     /// and then places each Sale into a List of Sales. 
     /// 
     /// @author: Alexander James Bochel
-    /// @version: 6/16/2017
+    /// @version: 7/14/2017
     /// 
     /// </summary>
     public class Reader
@@ -37,8 +37,13 @@ namespace ConsoleApplication1
             excel = new _Excel.Application();
             wbs = excel.Workbooks;             // Easier garbage cleanup when split up. 
             wb = excel.Workbooks.Add();
-            wb.Worksheets.Add();
-            wb.Worksheets.Add();
+            
+            // Ensure that there are enough worksheets. 
+            while (wb.Worksheets.Count < 3)
+            {
+                wb.Worksheets.Add(After: wb.Sheets[wb.Sheets.Count]);
+            }
+            
             ws = wb.Worksheets[sheet];
             ws.Paste();
 

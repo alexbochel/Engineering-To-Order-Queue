@@ -20,6 +20,7 @@ namespace ConsoleApplication1
         public String salesNum { get; set; }
         public String material { get; set; }
         public String description { get; set; }
+        public String BOM { get; set; }
         public String MSPS { get; set; }
         public String MRPC { get; set; }
         public String quantity { get; set; }
@@ -29,9 +30,12 @@ namespace ConsoleApplication1
         public int daysInQueue { get; set; }
         private DateTime todaysDate;
 
+        /// <summary>
+        /// TODO
+        /// </summary>
         public Sales()
         {
-            // Nothing to do here.    
+            BOM = "no";   
         }
 
         /// <summary>

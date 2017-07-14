@@ -27,7 +27,7 @@ namespace ConsoleApplication1
         /// <param name="args"> Command line arguments. </param>
         static void Main(string[] args)
         {
-            runSAP();
+            runOREP();
             openAndExecute();
             print();
         }
@@ -55,13 +55,13 @@ namespace ConsoleApplication1
         /// This method calls the embedded VBScript file and runs it before executing the 
         /// rest of the program. 
         /// </summary>
-        private static void runSAP()
+        private static void runOREP()
         {
             var assembly = Assembly.GetExecutingAssembly();
             //Getting names of all embedded resources
             var allResourceNames = assembly.GetManifestResourceNames();
             //Selecting first one. 
-            var resourceName = allResourceNames[0];
+            var resourceName = allResourceNames[1];
             var pathToFile = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory) +
                               resourceName;
 
