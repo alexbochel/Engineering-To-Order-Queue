@@ -9,6 +9,9 @@ namespace AutomationProgramTests
     [TestClass]
     public class ModifierTest
     {
+        // Declare list of Sales to be tested. 
+        List<Sales> testList = new List<Sales>();
+        
         // Declare ten sales to be used in the modifier for the tests.
         Sales sale1 = new Sales();
         Sales sale2 = new Sales();
@@ -21,27 +24,43 @@ namespace AutomationProgramTests
         Sales sale9 = new Sales();
         Sales sale10 = new Sales();
 
-        
+        /// <summary>
+        /// Ensures that every test begins with this setup of data. 
+        /// </summary>
+        [TestInitialize]
+        public void setUp()
+        {
+            // Set the information for each sale. 
+            sale1.material = "KVQWERT";                 // Deleted
+            sale1.MSPS = "10";
 
-        // Declare list of Sales to be tested. 
-        List<Sales> testList = new List<Sales>();
+            sale2.material = "KVQWERTY";
+            sale2.MSPS = "15";
 
-        
-        [TestMethod]
-        public void TestSort()
-        {            
-            // Add material names to the sales fields created. 
-            sale1.material = "DEF123";
-            sale2.material = "ABC123";
-            sale3.material = "ABC456";
-            sale4.material = "GHI123";
-            sale5.material = "GHI223";
-            sale6.material = "ZZZ999";
-            sale7.material = "ABC124";
-            sale8.material = "JKL111";
-            sale9.material = "ACB123";
-            sale10.material = "ABC124";
+            sale3.material = "FGAHJWI";                 // Deleted
+            sale3.MSPS = "10";
 
+            sale4.material = "CQWERTY";
+            sale4.MSPS = "10";
+
+            sale5.material = "QWERTY";                  // Deleted
+            sale5.MSPS = "15";
+
+            sale6.material = "PRESQWERTY";              // Deleted
+            sale6.MSPS = "10";
+
+            sale7.material = "AQWERTYUIOP";
+            sale7.MSPS = "10";
+
+            sale8.material = "QWERTYJ";                 // Deleted
+            sale8.MSPS = "10";
+
+            sale9.material = "ZQWERT";                   // Deleted
+            sale9.MSPS = "15";
+
+            sale10.material = "DQWJERTY";                // Deleted
+            sale10.MSPS = "15";
+            
             // Add sales to the list of sales. 
             testList.Add(sale1);
             testList.Add(sale2);
@@ -53,7 +72,14 @@ namespace AutomationProgramTests
             testList.Add(sale8);
             testList.Add(sale9);
             testList.Add(sale10);
+        }
 
+        /// <summary>
+        /// This method tests the sorting method in Modifier.
+        /// </summary>
+        [TestMethod]
+        public void TestSort()
+        {
             // Declare Modifier Object.
             Modifier modifier = new Modifier(testList);
 
@@ -61,76 +87,28 @@ namespace AutomationProgramTests
             modifier.sortMaterial();
             testList = modifier.salesList;
 
-            // Print statements to view whole list in output screen
-            Console.WriteLine(testList[0].material.ToString());
-            Console.WriteLine(testList[1].material.ToString());
-            Console.WriteLine(testList[2].material.ToString());
-            Console.WriteLine(testList[3].material.ToString());
-            Console.WriteLine(testList[4].material.ToString());
-            Console.WriteLine(testList[5].material.ToString());
-            Console.WriteLine(testList[6].material.ToString());
-            Console.WriteLine(testList[7].material.ToString());
-            Console.WriteLine(testList[8].material.ToString());
-            Console.WriteLine(testList[9].material.ToString());
-
-
-            Assert.AreEqual("ABC123", testList[0].material);
-            Assert.AreEqual("ABC124", testList[1].material);
-            Assert.AreEqual("ABC124", testList[2].material);
-            Assert.AreEqual("ZZZ999", testList[9].material);  
+            Assert.AreEqual("AQWERTYUIOP", testList[0].material);
+            Assert.AreEqual("CQWERTY", testList[1].material);
+            Assert.AreEqual("DQWJERTY", testList[2].material);
+            Assert.AreEqual("ZQWERT", testList[9].material);
         }
 
+        /// <summary>
+        /// This test checks to see if the correct entries are deleted form the list in Modifier class. 
+        /// </summary>
         [TestMethod]
-        public void TestDeleteFifteens()
+        public void TestModifyEntries()
         {
-            sale1.MSPS = "10";
-            sale2.MSPS = "15";
-            sale3.MSPS = "15";
-            sale4.MSPS = "14";
-            sale5.MSPS = "15";
-
-            testList.Add(sale1);
-            testList.Add(sale2);
-            testList.Add(sale3);
-            testList.Add(sale4);
-            testList.Add(sale5);
-
             Modifier modifier = new Modifier(testList);
 
-            // Ensure everything was added correctly.
-            Assert.IsTrue(testList.Count == 5);
+            modifier.modifyEntries();
+            testList = modifier.salesList;
 
-            modifier.deleteFifteens();
-
-            Assert.IsTrue(testList.Count == 2); 
+            Assert.AreEqual(3, testList.Count);
+            Assert.AreEqual("KVQWERTY", testList[0].material);
+            Assert.AreEqual("CQWERTY", testList[1].material);
+            Assert.AreEqual("AQWERTYUIOP", testList[2].material);
         }
 
-        [TestMethod]
-        public void TestDeleteTJ()
-        {
-            sale1.material = "ABJFSJTJ"; // Contains TJ
-            sale2.material = "KTJANDKFH"; // Contains TJ
-            sale3.material = "SADVUAWDJ"; // No TJ
-            sale4.material = "JTNDBAYK"; // No TJ
-
-            testList.Add(sale1);
-            testList.Add(sale2);
-            testList.Add(sale3);
-            testList.Add(sale4);
-
-            Modifier modifier = new Modifier(testList);
-
-            Assert.IsTrue(testList.Count == 4);
-
-            modifier.deleteTJ();
-
-            Assert.IsTrue(testList.Count == 0);
-        }
-
-        [TestMethod]
-        public void testDaysInQueue()
-        {
-
-        }
-    }
+    }  
 }

@@ -20,12 +20,66 @@ namespace ConsoleApplication1
     public class Reader
     {   
         private int sheet = 1;
-        public _Application excel { get; set; }
-        public Workbooks wbs { get; set; }
-        public _Workbook wb { get; set; }
-        public _Worksheet ws { get; set; }
-        public List<Sales> salesList { get; set; }
-        public Modifier modifier;
+        private _Application _excel;
+        private Workbooks _wbs;
+        private _Workbook _wb;
+        private _Worksheet _ws;
+        private Modifier _modifier;
+        private List<Sales> _salesList;
+        
+        /// <summary>
+        /// Getter/Setter: The modifier object that manipulates the data from SAP. 
+        /// </summary>
+        public Modifier modifier 
+        {
+            get { return _modifier; }
+            set { _modifier = value; }
+        }
+
+        /// <summary>
+        /// Getter/Setter: The excel instance with the report in it. 
+        /// </summary>
+        public _Application excel
+        {
+            get { return _excel; }
+            set { _excel = value; }
+        }
+
+        /// <summary>
+        /// Getter/Setter: Excel Workbooks. 
+        /// </summary>
+        public Workbooks wbs
+        {
+            get { return _wbs; }
+            set { _wbs = value; }
+        }
+
+        /// <summary>
+        /// Getter/Setter: The workbook open in excel. 
+        /// </summary>
+        public _Workbook wb
+        {
+            get { return _wb; }
+            set { _wb = value; }
+        }
+
+        /// <summary>
+        /// Getter/Setter: The worksheet number. 
+        /// </summary>
+        public _Worksheet ws
+        {
+            get { return _ws; }
+            set { _ws = value; }
+        }
+
+        /// <summary>
+        /// Getter/Setter: The list of sales created based off of the rows of SAP data. 
+        /// </summary>
+        public List<Sales> salesList
+        {
+            get { return _salesList; }
+            set { _salesList = value; }
+        }
 
         /// <summary>
         /// This constructor opens a new excel file and copies the clipboard onto 
@@ -34,6 +88,8 @@ namespace ConsoleApplication1
         /// </summary>
         public Reader()
         {
+            Console.WriteLine("Reading SAP data...");
+            
             excel = new _Excel.Application();
             wbs = excel.Workbooks;             // Easier garbage cleanup when split up. 
             wb = excel.Workbooks.Add();
@@ -103,6 +159,12 @@ namespace ConsoleApplication1
             sale.date = readCell(row, i);                  // Date field            
         }
 
+        /// <summary>
+        /// This method reads in a cell from excel. 
+        /// </summary>
+        /// <param name="i"> The "y" coordinate. </param>
+        /// <param name="j"> The "x" coordinate. </param>
+        /// <returns> The value in the cell as a string. </returns>
         private string readCell(int i, int j)
         {
             if (ws.Cells[i, j].Value2 != null)

@@ -10,11 +10,12 @@ using System.Diagnostics;
 namespace ConsoleApplication1
 {
     /// <summary>
+    /// 
     /// This class modifies an array of all of the sales in order to manipulate the order and contents
     /// which will then print out onto the excel document. 
     /// 
     /// @author: Alexander James Bochel
-    /// @version: 7/12/2017
+    /// @version: 7/21/2017
     /// 
     /// </summary>
     public class Modifier
@@ -52,8 +53,7 @@ namespace ConsoleApplication1
             {
                 bool found = false;
                 
-                convertDate(j);
-                findQueueDuration(j);
+                this.findQueueDuration(j);
 
                 deletePres(ref j, ref found);
                 deleteTJ(ref j, ref found);
@@ -66,12 +66,16 @@ namespace ConsoleApplication1
         /// <summary>
         /// This method sorts the material by alphabetical order using a selection sort implementation. 
         /// </summary>
-        /// <returns> Whether or not sort correctly finishes. </returns>
         public void sortMaterial()
         {
             salesList = salesList.OrderBy(o => o.material).ToList();
         }
 
+        /// <summary>
+        /// Deletes entries that have been in the queue for over 100 days. 
+        /// </summary>
+        /// <param name="i"> Index in the list. </param>
+        /// <param name="deleted"> Whether or not an item has been deleted this iteration. </param>
         private void tweaks(ref int i, ref bool deleted)
         {
             if (!deleted && salesList[i].daysInQueue > 100)
@@ -80,6 +84,11 @@ namespace ConsoleApplication1
             }
         }
 
+        /// <summary>
+        /// Deletes all Prescott ETOs from the list. 
+        /// </summary>
+        /// <param name="i"> Index in the list. </param>
+        /// <param name="deleted"> Whether or not an item has been deleted this iteration. </param>
         private void deletePres(ref int i, ref bool deleted)
         {
             if (!deleted && salesList[i].material.Contains("PRES"))
@@ -87,7 +96,12 @@ namespace ConsoleApplication1
                 remove(ref i, ref deleted);
             }
         }
-        
+
+        /// <summary>
+        /// Deletes alll status 15 ETOs from the list.  
+        /// </summary>
+        /// <param name="i"> Index in the list. </param>
+        /// <param name="deleted"> Whether or not an item has been deleted this iteration. </param>
         private void deleteFifteens(ref int i, ref bool deleted)
         {
             if (!deleted && salesList[i].MSPS == "15" && !salesList[i].material.Contains("KV"))
@@ -96,6 +110,11 @@ namespace ConsoleApplication1
             }
         }
 
+        /// <summary>
+        /// Deletes all status 10 KV ETOs from the list. 
+        /// </summary>
+        /// <param name="i"> Index in the list. </param>
+        /// <param name="deleted"> Whether or not an item has been deleted this iteration. </param>
         private void deleteKVTens(ref int i, ref bool deleted)
         {
             if (!deleted && salesList[i].MSPS == "10" && salesList[i].material.Contains("KV"))
@@ -104,6 +123,11 @@ namespace ConsoleApplication1
             }
         }
 
+        /// <summary>
+        /// Deletes all ETOs handled by Tijuana. 
+        /// </summary>
+        /// <param name="i"> Index in the list. </param>
+        /// <param name="deleted"> Whether or not an item has been deleted this iteration. </param>
         private void deleteTJ(ref int i, ref bool deleted)
         {
             if (!deleted && salesList[i].material.Contains("J"))
@@ -112,29 +136,36 @@ namespace ConsoleApplication1
             }
         }
 
+        /// <summary>
+        /// This method removes an entry from the list. 
+        /// </summary>
+        /// <param name="k"> Index of the item to be removed. </param>
+        /// <param name="delete"> Always enters as false, method changes it to true. </param>
         private void remove(ref int k, ref bool delete)
         {
             salesList.Remove(salesList[k]);
             delete = true;
             k--;
         }
-
-        private void convertDate(int i)
+        
+        /// <summary>
+        /// Finds the number of days each ETO has been in the queue and throws an exception if incorrect data is entered. 
+        /// </summary>
+        /// <param name="i"> Index in the list. </param>
+        private void findQueueDuration(int i)
         {
             try
             {
                 salesList[i].doubleDate = double.Parse(salesList[i].date);
                 salesList[i].formatDate = DateTime.FromOADate(salesList[i].doubleDate);
+                salesList[i].findQueueDuration();
             }
             catch
             {
+                salesList[i].daysInQueue = 0;
                 Console.WriteLine("You Messed Up! Don't forget to have SAP data copied to your clipboard. GO BLUE!");
             }
         }
-
-        private void findQueueDuration(int i)
-        {
-            salesList[i].findQueueDuration();
-        }
     }
 }
+

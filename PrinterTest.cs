@@ -12,12 +12,23 @@ namespace AutomationProgramTests
         Reader reader;
         Printer printer;
 
+        /// <summary>
+        /// This test method simply opens excel so that the printing process is visible. 
+        /// </summary>
         [TestMethod]
         public void observePrint()
-        {
-            reader = new Reader();
-            reader.modifier.execute();
-            printer = new Printer(reader.salesList, reader.excel, reader.wbs, reader.wb, reader.ws);
+        { 
+            try
+            {
+                reader = new Reader();
+                reader.modifier.execute();
+                printer = new Printer(reader.salesList, reader.excel, reader.wbs, reader.wb, reader.ws);
+            }
+            catch (Exception e)
+            {
+                Assert.IsTrue(e != null);
+                Assert.IsTrue(e is FormatException);
+            }
         }
     }
 }

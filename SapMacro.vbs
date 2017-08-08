@@ -1,3 +1,11 @@
+Dim application
+Dim SapGuiAuto
+Dim Connection
+Dim session
+Dim WScript
+Dim PauseTime, Start
+
+
 If Not IsObject(application) Then
    Set SapGuiAuto  = GetObject("SAPGUI")
    Set application = SapGuiAuto.GetScriptingEngine
@@ -33,9 +41,24 @@ session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3
 session.findById("wnd[1]").sendVKey 0
 session.findById("wnd[1]/tbar[0]/btn[8]").press
 session.findById("wnd[0]/tbar[1]/btn[8]").press
+
+'* This section ensures that DMANNS is always the layout that is chosen. 
 session.findById("wnd[0]/tbar[1]/btn[33]").press
-session.findById("wnd[1]/usr/ssubD0500_SUBSCREEN:SAPLSLVC_DIALOG:0501/cntlG51_CONTAINER/shellcont/shell").setCurrentCell 162,"TEXT"
-session.findById("wnd[1]/usr/ssubD0500_SUBSCREEN:SAPLSLVC_DIALOG:0501/cntlG51_CONTAINER/shellcont/shell").selectedRows = "162"
+session.findById("wnd[1]/usr/ssubD0500_SUBSCREEN:SAPLSLVC_DIALOG:0501/cntlG51_CONTAINER/shellcont/shell").currentCellRow = -1
+session.findById("wnd[1]/usr/ssubD0500_SUBSCREEN:SAPLSLVC_DIALOG:0501/cntlG51_CONTAINER/shellcont/shell").selectColumn "VARIANT"
+
+PauseTime = 1
+Start = Timer
+Do While Timer < Start + PauseTime	'* Ensures that the column has been succesfully selected. 
+    'DoEvents
+Loop
+
+session.findById("wnd[1]/usr/ssubD0500_SUBSCREEN:SAPLSLVC_DIALOG:0501/cntlG51_CONTAINER/shellcont/shell").contextMenu
+session.findById("wnd[1]/usr/ssubD0500_SUBSCREEN:SAPLSLVC_DIALOG:0501/cntlG51_CONTAINER/shellcont/shell").selectContextMenuItem "&FILTER"
+session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").text = "/5108 DMANNS"
+session.findById("wnd[2]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").caretPosition = 12
+session.findById("wnd[2]/tbar[0]/btn[0]").press
+session.findById("wnd[1]/usr/ssubD0500_SUBSCREEN:SAPLSLVC_DIALOG:0501/cntlG51_CONTAINER/shellcont/shell").selectedRows = "0"
 session.findById("wnd[1]/usr/ssubD0500_SUBSCREEN:SAPLSLVC_DIALOG:0501/cntlG51_CONTAINER/shellcont/shell").clickCurrentCell
 session.findById("wnd[0]/usr/cntlGRID1/shellcont/shell").setCurrentCell 2,"MATNR"
 session.findById("wnd[0]").maximize
