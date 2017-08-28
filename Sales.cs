@@ -11,7 +11,7 @@ namespace ConsoleApplication1
     /// This class contains information about each individual row on the excel sheet. 
     /// 
     /// @author: Alexander James Bochel
-    /// @version: 7/31/2017
+    /// @version: 9/18/2017
     /// 
     /// </summary>
     public class Sales
@@ -24,7 +24,13 @@ namespace ConsoleApplication1
         private string _MSPS;
         private string _MRPC;
         private string _quantity;
-        private string _date;            
+        private string _date;
+        private string _cBurgDate;
+        private string _addNotes;
+        private string _engeNotes;
+        private string _ranking;
+        private DateTime _formatCBurgDate;
+        private double _doubleCBurgDate;
         private DateTime _formatDate;    
         private double _doubleDate;
         private int _daysInQueue;
@@ -45,7 +51,10 @@ namespace ConsoleApplication1
         public string material
         {
             get { return _material; }
-            set { _material = value; }
+            set { 
+                    _material = value;
+                    fillRanking();
+                }
         }
         /// <summary>
         /// Getter/Setter: Description of the part. 
@@ -112,6 +121,7 @@ namespace ConsoleApplication1
             get { return _doubleDate; }
             set { _doubleDate = value; }
         }
+
         /// <summary>
         /// Getter/Setter: The amount of days the part has been in the queue. 
         /// </summary>
@@ -119,14 +129,81 @@ namespace ConsoleApplication1
         {
             get { return _daysInQueue; }
             set { _daysInQueue = value; }
-        } 
+        }
+
+        /// <summary>
+        /// Getter/Setter: When cBurg starts working on the specific ETO. 
+        /// </summary>
+        public string cBurgDate
+        {
+            get { return _cBurgDate; }
+            set 
+            { 
+                _cBurgDate = value;
+
+                if (_cBurgDate != "" && _cBurgDate != null && !_cBurgDate.Contains("/"))
+                {
+                    doubleCBurgDate = double.Parse(_cBurgDate);
+                    formatCBurgDate = DateTime.FromOADate(doubleCBurgDate);
+                }
+                else if (_cBurgDate.Contains("/"))
+                {
+                    formatCBurgDate = Convert.ToDateTime(_cBurgDate);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Getter/Setter: Random notes.  
+        /// </summary>
+        public string addNotes
+        {
+            get { return _addNotes; }
+            set { _addNotes = value; }
+        }
+
+        /// <summary>
+        /// Getter/Setter: Engineering notes.  
+        /// </summary>
+        public string engeNotes
+        {
+            get { return _engeNotes; }
+            set { _engeNotes = value; }
+        }
+
+        /// <summary>
+        /// Getter/Setter: Priority of the ETO. 
+        /// </summary>
+        public string ranking
+        {
+            get { return _ranking; }
+            set { _ranking = value; }
+        }
+
+        /// <summary>
+        /// Getter/Setter: Date started in CBurg. 
+        /// </summary>
+        public double doubleCBurgDate
+        {
+            get { return _doubleCBurgDate; }
+            set { _doubleCBurgDate = value; }
+        }
+
+        /// <summary>
+        /// Getter/Setter: Format date of CBurg. 
+        /// </summary>
+        public DateTime formatCBurgDate
+        {
+            get { return _formatCBurgDate; }
+            set { _formatCBurgDate = value; }
+        }
 
         /// <summary>
         /// This constructor sets the default BOM status to "no". 
         /// </summary>
         public Sales()
         {
-            BOM = "no";   
+            BOM = "no";
         }
 
         /// <summary>
@@ -136,6 +213,21 @@ namespace ConsoleApplication1
         {
             todaysDate = DateTime.Today; // Find todays date. 
             daysInQueue = -1 * Convert.ToInt32((formatDate - todaysDate).TotalDays);    // Multiply by negative one to make days number positive.
+        }
+
+        /// <summary>
+        /// This method ensures that all beacons have some sort of ranking criteria. 
+        /// </summary>
+        private void fillRanking()
+        {
+            if (material.Contains("BEAC"))
+            {
+                ranking = "Needs Ranking";
+            }
+            else
+            {
+                ranking = "";
+            }
         }
     }
 }

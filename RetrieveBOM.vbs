@@ -53,3 +53,7 @@ session.findById("wnd[0]/usr/cntlRESULT_LIST/shellcont/shell").selectAll
 session.findById("wnd[0]/usr/cntlRESULT_LIST/shellcont/shell").selectAll
 session.findById("wnd[0]/usr/cntlRESULT_LIST/shellcont/shell").contextMenu
 session.findById("wnd[0]/usr/cntlRESULT_LIST/shellcont/shell").selectContextMenuItemByText "Copy Text"
+
+'* This section resets SAP. 
+session.findById("wnd[0]/tbar[0]/btn[15]").press
+session.findById("wnd[0]/tbar[0]/btn[15]").press

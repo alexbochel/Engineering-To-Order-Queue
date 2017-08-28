@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using _Excel = Microsoft.Office.Interop.Excel;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace ConsoleApplication1
 {
@@ -22,9 +23,20 @@ namespace ConsoleApplication1
     {
         static Reader reader;
         static Retreiver retreiver;
+        static string fileExcel;
 
+        [STAThread]
         static void Main(string[] args)
-        {
+        {            
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Title = "Open Previous ETO Report";
+            dialog.Filter = "Excel Files|*.xls;*.xlsx";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                fileExcel = dialog.FileName;
+            }
+            
             openAndExecute();
             print();
         }
@@ -34,7 +46,9 @@ namespace ConsoleApplication1
             retreiver = new Retreiver();
             retreiver.runOREP();
             
-            reader = new Reader();
+
+
+            reader = new Reader(fileExcel);
             reader.modifier.execute();
         }
 

@@ -54,6 +54,9 @@ namespace ConsoleApplication1
             tempPrintMat();
             salesList = retriever.salesCompare;
 
+            // This section copies information from the previous days excel sheet. 
+
+
             // Printing and cleanup.
             print();
             ws.Columns.AutoFit();
@@ -282,7 +285,7 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// This method adds all of the formulas to the excek sheet. 
+        /// This method adds all of the formulas to the excel sheet. 
         /// </summary>
         private void addFormulas()
         {
@@ -419,7 +422,7 @@ namespace ConsoleApplication1
 
             // Create instance of a chart object. 
             var charts = ws.ChartObjects();
-            var chartObject = charts.Add(3000, 20, 300, 300);
+            var chartObject = charts.Add(3150, 20, 300, 300);
             var chart = chartObject.Chart;
             var range = ws.get_Range(topLeft, bottomRight);
 
@@ -464,7 +467,43 @@ namespace ConsoleApplication1
                 cellHoriz++;
 
                 printCell(row, cellHoriz, salesList[row - 19].formatDate.ToString("MM/dd/yyyy")); // Prints date
-                cellHoriz = cellHoriz + 5;
+                cellHoriz++;
+
+                if (salesList[row - 19].cBurgDate != null)
+                {
+                    if (salesList[row - 19].cBurgDate != "" && !salesList[row - 19].cBurgDate.Contains("/"))
+                    {
+                        printCell(row, cellHoriz, salesList[row - 19].formatCBurgDate.ToString("MM/dd/yyyy"));
+                        cellHoriz++;
+                    }
+                    else
+                    {
+                        printCell(row, cellHoriz, salesList[row - 19].cBurgDate);
+                        cellHoriz++;
+                    }
+                }
+                else
+                {
+                    printCell(row, cellHoriz, "");
+                    cellHoriz++;
+                }
+
+                printCell(row, cellHoriz, salesList[row - 19].addNotes);
+                cellHoriz++;
+
+                printCell(row, cellHoriz, salesList[row - 19].engeNotes);
+                cellHoriz++;
+
+                printCell(row, cellHoriz, salesList[row - 19].ranking);
+
+                // Colors cell yellow if it needs a ranking. 
+                if (salesList[row - 19].ranking.Contains("Ranking"))
+                {
+                    var range = (Microsoft.Office.Interop.Excel.Range)ws.Cells[row, cellHoriz];
+                    range.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+                }
+
+                cellHoriz++;
 
                 printCell(row, cellHoriz, salesList[row - 19].daysInQueue.ToString()); // Prints days in queue
                 sumDuration = sumDuration + salesList[row - 19].daysInQueue;
@@ -493,8 +532,8 @@ namespace ConsoleApplication1
 
             ws.Activate();
 
-            var range = ws.get_Range("A1", "A" + finalRow.ToString());
-            range.Select();
+            var range = ws.get_Range("A1:A" + finalRow.ToString());
+            ws.Application.Goto(range, true);        //range.Select();
             range.Copy();
             retriever = new Retreiver(salesList, excel, wbs, wb, ws);
             range.Clear();
@@ -513,7 +552,7 @@ namespace ConsoleApplication1
             printCell(18, 6, "MRPC");
             printCell(18, 7, "Quantity");
             printCell(18, 8, "Created On"); 
-            printCell(18, 9, "Started");
+            printCell(18, 9, "CBurg Start Date");
             printCell(18, 10, "Additional Notes");
             printCell(18, 11, "Engineering Notes");
             printCell(18, 12, "Ranking 1-5");

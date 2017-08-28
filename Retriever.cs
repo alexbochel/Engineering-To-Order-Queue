@@ -157,9 +157,12 @@ namespace ConsoleApplication1
 
             numHits = range - 1;
 
-            var ranger = ws.get_Range("A1", "D" + range.ToString());
-            ranger.Select();
-            ranger.Clear();
+            string cellA = "A1:D" + range.ToString();
+            ws.get_Range(cellA, Type.Missing).Select();
+            ws.get_Range(cellA, Type.Missing).Clear();
+            //var ranger = ws.get_Range("A1", "D" + range.ToString());
+            //ranger.Select();
+            //ranger.Clear();
         }
 
         /// <summary>

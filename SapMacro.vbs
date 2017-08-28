@@ -24,7 +24,7 @@ End If
 '* This is the main section that was recorded by SAP GUI recording software. If SAP changes this must be
 '* updated. 
 session.findById("wnd[0]").maximize
-session.findById("wnd[0]/tbar[0]/okcd").text = "zmmsd_orep"
+session.findById("wnd[0]/tbar[0]/okcd").text = "/nzmmsd_orep"
 session.findById("wnd[0]").sendVKey 0
 session.findById("wnd[0]/tbar[1]/btn[17]").press
 session.findById("wnd[1]/usr/txtENAME-LOW").text = "smacovei"

@@ -154,8 +154,15 @@ namespace ConsoleApplication1
         /// <param name="i"> Index in the list. </param>
         private void findQueueDuration(int i)
         {
+
+            //if (salesList[i].cBurgDate != "" && salesList[i].cBurgDate != null && !salesList[i].cBurgDate.Contains("/"))
+            //{
+            //    salesList[i].doubleCBurgDate = double.Parse(salesList[i].cBurgDate);
+            //    salesList[i].formatCBurgDate = DateTime.FromOADate(salesList[i].doubleCBurgDate);
+            //}
+            
             try
-            {
+            {                
                 salesList[i].doubleDate = double.Parse(salesList[i].date);
                 salesList[i].formatDate = DateTime.FromOADate(salesList[i].doubleDate);
                 salesList[i].findQueueDuration();
